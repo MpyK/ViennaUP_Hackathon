@@ -110,6 +110,44 @@ header[data-testid="stHeader"]{background:transparent;}
   color:#ffffff!important;border-radius:10px!important;font-size:1.1rem!important;font-weight:700!important;}
 [data-testid="stMetricValue"]{color:#ffffff!important;font-size:1.6rem!important;font-weight:700!important;}
 [data-testid="stMetricLabel"]{color:#94a3b8!important;font-size:0.85rem!important;font-weight:600!important;}
+[data-testid="stChatMessage"] p,
+[data-testid="stChatMessage"] li,
+[data-testid="stChatMessage"] span,
+[data-testid="stChatMessage"] div {
+    color: #e2e8f0 !important;
+    font-size: 0.95rem !important;
+    line-height: 1.7 !important;
+}
+[data-testid="stChatMessage"] {
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    border-radius: 12px !important;
+    padding: 12px !important;
+    margin-bottom: 10px !important;
+}
+input, textarea, [contenteditable] {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    caret-color: #4ade80 !important;
+}
+[data-testid="stChatInput"] {
+    background: rgba(255,255,255,0.06) !important;
+}
+[data-testid="stChatInput"] > div {
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    border-radius: 12px !important;
+}
+[data-testid="stChatInput"] textarea,
+[data-testid="stChatInput"] textarea:focus,
+[data-testid="stChatInput"] textarea:active,
+[data-testid="stChatInput"] textarea:hover {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background: transparent !important;
+    caret-color: #4ade80 !important;
+    font-size: 1rem !important;
+}
 .stSlider>div>div>div{background:#4ade80!important;}
 .stSlider label p{color:#94a3b8!important;font-weight:600!important;font-size:0.9rem!important;}
 </style>
@@ -424,9 +462,28 @@ def build_context():
         lines.append(f"PANEL {pid}: {g['manufacturer']} {g['model']} | {g['power_wp']}Wp @€{g['price_per_wp_eur']}/Wp | Efficiency: {perf['efficiency_pct']}% | Compliance: {comp['compliance_status']} | Carbon: {cf.get('per_wp_kg_co2e','?')} kg CO2e/Wp | Silicon: {crm['silicon_origin']} ({crm['silicon_risk']} risk) | Ethics: {sup['ethics_score']}/100 | Current efficiency: {soh['current_efficiency_pct']}% | Hotspots: {soh['hotspots_detected']}")
     return "\n".join(lines)
 
-SYSTEM_PROMPT=f"""You are an expert AI for SolarPassport, a PV DPP-ERP platform.
-PV PANEL DATA:\n{build_context()}
-Answer procurement, ESG, EOL, compliance, geopolitical risk questions using real DPP data. Be direct and concise. Under 250 words."""
+SYSTEM_PROMPT=f"""You are an expert AI procurement assistant for SolarPassport, a PV solar panel DPP-ERP platform used by a European energy company.
+
+STRICT RULES:
+- You ONLY answer questions about the 6 panels in this system. If asked about panels or suppliers NOT listed below, say: "That supplier is not in our system. Our database includes: LONGi Solar, Meyer Burger Technology, Jinko Solar, REC Group, SunPower (Maxeon Solar), and SolarMax Generic. Would you like me to compare these?"
+- Never invent data. Only use the figures below.
+- Be direct, specific, name actual panels, give real numbers. Under 200 words.
+
+PANELS IN SYSTEM:
+{build_context()}
+
+GEOPOLITICAL KNOWLEDGE (use this when relevant):
+- China controls ~85% of global silicon production and ~75% of solar panel manufacturing. Panels with silicon from China face HIGH supply chain concentration risk in any US-China trade dispute or tariff escalation.
+- LONGi Solar (PV-001): Silicon from China, assembled in Austria. MEDIUM silicon risk. Partially exposed to China trade disruptions.
+- Jinko Solar (PV-003): Both silicon AND silver from China. MEDIUM risk on both. Most exposed to China trade war of all panels in system.
+- SolarMax Generic (PV-006): Unknown silicon origin. UNKNOWN risk. Avoid in any geopolitical uncertainty.
+- Meyer Burger (PV-002): Silicon from Germany (Wacker Chemie), silver from EU recycled. LOW risk. Safest choice in a trade war.
+- REC Group (PV-004): Silicon from Norway (REC Silicon). LOW risk. Good alternative.
+- SunPower/Maxeon (PV-005): Silicon from France/Germany. LOW risk. Premium EU-sourced option.
+- Taiwan: None of our 6 panels have primary manufacturing in Taiwan. Taiwan is a major semiconductor hub but not a primary solar panel manufacturer in our portfolio. If asked about Taiwan suppliers, clarify this and note that our EU-manufactured panels (Meyer Burger, Maxeon) are the safest geopolitically.
+- Russia/Ukraine war: No direct material exposure in our panel database, but energy price volatility makes solar procurement more attractive.
+
+ANSWER STYLE: Direct, data-driven, name specific panels with actual numbers. For geopolitical questions, clearly rank which panels are most/least at risk and why."""
 
 if "page" not in st.session_state: st.session_state.page="Dashboard"
 if "selected_panel" not in st.session_state: st.session_state.selected_panel=None
@@ -895,12 +952,17 @@ elif page=="AI Assistant":
     st.markdown("""<div class="sp-hero"><div class="sp-hero-title">AI Assistant</div>
     <div class="sp-hero-sub">Ask anything — procurement, ESG, supply chain risk, EOL decisions</div></div>""", unsafe_allow_html=True)
     if not st.session_state.chat_msgs:
-        suggestions=["Which panel should I buy if I prioritise sustainable mining?",
-            "China controls 85% of silicon — which panels are at risk?",
-            "Give me an ESG summary of our PV portfolio.",
-            "Should I repair a panel with 14.8% efficiency and hotspots?",
-            "Which panel has the best carbon footprint per Wp?",
-            "Which panels qualify for second life?"]
+        st.markdown("### 💡 Try asking:")
+        suggestions=[
+            "There is a trade war between the US and China. Which of our panels are at risk?",
+            "Taiwan is in conflict. Are any of our panels affected?",
+            "Which panel should I buy if I care about ethics and sustainability?",
+            "Give me a full ESG summary of our portfolio.",
+            "Which panel has the lowest carbon footprint per Wp?",
+            "Which panels can be sold in the second-hand market after use?",
+            "Compare Meyer Burger vs LONGi Solar on sustainability.",
+            "Should I repair a panel with 14.8% efficiency and hotspots detected?",
+        ]
         cols=st.columns(2)
         for i,s in enumerate(suggestions):
             with cols[i%2]:

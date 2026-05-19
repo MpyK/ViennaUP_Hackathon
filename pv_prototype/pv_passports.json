@@ -45,7 +45,7 @@
         "reach_compliant": true,
         "rohs_compliant": true,
         "doc_reference": "DOC-LONGI-EU-2024-001",
-        "notified_body": "TÜV Rheinland",
+        "notified_body": "TUV Rheinland",
         "independent_verifier": "Bureau Veritas",
         "epd_available": true,
         "standards": ["IEC 61215", "IEC 61730", "EN 50380", "UL 61730", "MCS"]
@@ -150,7 +150,7 @@
         "reach_compliant": true,
         "rohs_compliant": true,
         "doc_reference": "DOC-MB-DE-2024-002",
-        "notified_body": "TÜV SÜD",
+        "notified_body": "TUV SUD",
         "independent_verifier": "Fraunhofer ISE",
         "epd_available": true,
         "standards": ["IEC 61215", "IEC 61730", "EN 50380", "IEC 61701", "MCS", "Cradle-to-Gate EPD"]
@@ -258,7 +258,7 @@
         "reach_compliant": true,
         "rohs_compliant": true,
         "doc_reference": "DOC-JINKO-EU-2024-003",
-        "notified_body": "TÜV Rheinland",
+        "notified_body": "TUV Rheinland",
         "independent_verifier": "SGS",
         "epd_available": false,
         "standards": ["IEC 61215", "IEC 61730", "EN 50380", "IEC 61701"]
