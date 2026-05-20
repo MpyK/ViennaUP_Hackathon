@@ -1,16 +1,16 @@
 """
-erp_connector.py — ERP Integration Layer for DPP-ERP Prototype
+ERP Integration Layer for DPP-ERP Prototype
 ViennaUP Hackathon 2026
 
 Drop this file next to app_v2.py.
 It handles all communication with the Mock ERP REST API (localhost:5000).
 Falls back gracefully to SQLite-only mode if the API is unreachable.
 
-Usage in app_v2.py:
+Usage Example:
     from erp_connector import ERPConnector
     erp = ERPConnector()
 
-    # Send a purchase order
+    # purchase order
     result = erp.create_purchase_order(
         battery_id="bat_001",
         battery_name="Northvolt Gen4",
@@ -21,7 +21,7 @@ Usage in app_v2.py:
         notes="Top ranked by Procurement Advisor"
     )
 
-    # Send an EOL decision
+    # EOL decision
     result = erp.create_eol_decision(
         battery_id="bat_003",
         battery_name="Samsung SDI",
@@ -34,7 +34,6 @@ Usage in app_v2.py:
 
 import requests
 import json
-from datetime import datetime
 
 ERP_BASE_URL = "http://localhost:5000/api"
 TIMEOUT = 5  # seconds
@@ -45,9 +44,7 @@ class ERPConnector:
         self.base_url = base_url.rstrip("/")
         self._online = None  # cached connectivity state
 
-    # ------------------------------------------------------------------ #
     # Connectivity
-    # ------------------------------------------------------------------ #
     def is_online(self) -> bool:
         """Check if the Mock ERP API is reachable."""
         try:
@@ -72,9 +69,7 @@ class ERPConnector:
             "color": "green" if online else "orange",
         }
 
-    # ------------------------------------------------------------------ #
     # Internal helpers
-    # ------------------------------------------------------------------ #
     def _post(self, endpoint: str, payload: dict) -> dict:
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
         try:

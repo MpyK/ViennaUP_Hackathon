@@ -9,6 +9,7 @@
     {
       "id": "PV-001",
       "qr_code": "QR-PV-LONGI-2024-EU-001",
+      "data_note": "All data is estimated demo data. The EU assembly location claimed as Salzburg, Austria is unverified — no publicly confirmed LONGi facility exists there. Performance specs and carbon figures are plausible estimates based on publicly available LONGi product information.",
       "general": {
         "manufacturer": "LONGi Solar",
         "model": "Hi-MO 6 Explorer LR5-72HIH-580M",
@@ -48,7 +49,13 @@
         "notified_body": "TUV Rheinland",
         "independent_verifier": "Bureau Veritas",
         "epd_available": true,
-        "standards": ["IEC 61215", "IEC 61730", "EN 50380", "UL 61730", "MCS"]
+        "standards": [
+          "IEC 61215",
+          "IEC 61730",
+          "EN 50380",
+          "UL 61730",
+          "MCS"
+        ]
       },
       "carbon_footprint": {
         "total_kg_co2e": 420,
@@ -114,6 +121,7 @@
     {
       "id": "PV-002",
       "qr_code": "QR-PV-MEYERBURGER-2024-EU-002",
+      "data_note": "All data is estimated demo data. Meyer Burger Technology AG is a real manufacturer; core specs are loosely based on publicly available product information. Ethics scores, pricing, EOL values, and SoH readings are fabricated.",
       "general": {
         "manufacturer": "Meyer Burger Technology",
         "model": "Meyer Burger White 395W HJT",
@@ -153,7 +161,14 @@
         "notified_body": "TUV SUD",
         "independent_verifier": "Fraunhofer ISE",
         "epd_available": true,
-        "standards": ["IEC 61215", "IEC 61730", "EN 50380", "IEC 61701", "MCS", "Cradle-to-Gate EPD"]
+        "standards": [
+          "IEC 61215",
+          "IEC 61730",
+          "EN 50380",
+          "IEC 61701",
+          "MCS",
+          "Cradle-to-Gate EPD"
+        ]
       },
       "carbon_footprint": {
         "total_kg_co2e": 185,
@@ -222,6 +237,7 @@
     {
       "id": "PV-003",
       "qr_code": "QR-PV-JINKO-2024-EU-003",
+      "data_note": "All data is estimated demo data for demonstration purposes. Jinko Solar key specs are loosely based on publicly available product information; ethics scores, pricing, EOL values are fabricated.",
       "general": {
         "manufacturer": "Jinko Solar",
         "model": "Tiger Neo N-type 72HL4-V 580W",
@@ -240,13 +256,13 @@
       "performance": {
         "efficiency_pct": 22.3,
         "power_tolerance_pct": "+3/-0",
-        "temperature_coefficient_pmax": -0.30,
+        "temperature_coefficient_pmax": -0.3,
         "noct_celsius": 44,
         "degradation_year1_pct": 1.0,
         "degradation_annual_pct": 0.4,
         "performance_at_25yr_pct": 87.4,
         "bifacial": true,
-        "bifaciality_factor": 0.70
+        "bifaciality_factor": 0.7
       },
       "compliance": {
         "compliance_status": "COMPLIANT",
@@ -261,7 +277,12 @@
         "notified_body": "TUV Rheinland",
         "independent_verifier": "SGS",
         "epd_available": false,
-        "standards": ["IEC 61215", "IEC 61730", "EN 50380", "IEC 61701"]
+        "standards": [
+          "IEC 61215",
+          "IEC 61730",
+          "EN 50380",
+          "IEC 61701"
+        ]
       },
       "carbon_footprint": {
         "total_kg_co2e": 680,
@@ -327,6 +348,7 @@
     {
       "id": "PV-004",
       "qr_code": "QR-PV-REC-2024-EU-004",
+      "data_note": "All data is estimated demo data for demonstration purposes. REC Group key specs are loosely based on publicly available product information; ethics scores, pricing, EOL values are fabricated.",
       "general": {
         "manufacturer": "REC Group",
         "model": "REC Alpha Pure-R 430W",
@@ -366,7 +388,13 @@
         "notified_body": "DNV GL",
         "independent_verifier": "PVEL (PV Evolution Labs)",
         "epd_available": true,
-        "standards": ["IEC 61215", "IEC 61730", "EN 50380", "IEC 61701", "UL 61730"]
+        "standards": [
+          "IEC 61215",
+          "IEC 61730",
+          "EN 50380",
+          "IEC 61701",
+          "UL 61730"
+        ]
       },
       "carbon_footprint": {
         "total_kg_co2e": 310,
@@ -435,6 +463,7 @@
     {
       "id": "PV-005",
       "qr_code": "QR-PV-SUNPOWER-2024-EU-005",
+      "data_note": "All data is estimated demo data. NOTE: SunPower Corporation filed for bankruptcy in August 2024. Maxeon Solar Technologies is a separate entity (spun off in 2020) but has also faced significant financial difficulties. Active/compliant status does not reflect current company status.",
       "general": {
         "manufacturer": "SunPower (Maxeon Solar)",
         "model": "Maxeon 6 AC 435W",
@@ -474,7 +503,15 @@
         "notified_body": "Bureau Veritas",
         "independent_verifier": "Fraunhofer ISE",
         "epd_available": true,
-        "standards": ["IEC 61215", "IEC 61730", "EN 50380", "IEC 61701", "UL 61730", "MCS", "Cradle-to-Gate EPD"]
+        "standards": [
+          "IEC 61215",
+          "IEC 61730",
+          "EN 50380",
+          "IEC 61701",
+          "UL 61730",
+          "MCS",
+          "Cradle-to-Gate EPD"
+        ]
       },
       "carbon_footprint": {
         "total_kg_co2e": 220,
@@ -541,6 +578,7 @@
     {
       "id": "PV-006",
       "qr_code": "QR-PV-UNKNOWN-2023-XX-006",
+      "data_note": "Intentionally fictional non-compliant record for demonstration purposes. Represents a worst-case procurement scenario.",
       "general": {
         "manufacturer": "SolarMax Generic (Unknown Origin)",
         "model": "SM-400P Polycrystalline",

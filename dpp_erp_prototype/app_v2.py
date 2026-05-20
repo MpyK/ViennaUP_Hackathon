@@ -12,12 +12,16 @@ import plotly.graph_objects as go
 import plotly.express as px
 from datetime import datetime
 import sqlite3
+import sys, pathlib
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
+BASE_DIR = pathlib.Path(__file__).parent
 
-# ── ERP Connector ──────────────────────────────────────────────────────────────
+# ERP Connectio
 from erp_connector import ERPConnector
+from config import GROQ_API_KEY
 erp = ERPConnector()
 
-# ── Page config ───────────────────────────────────────────────────────────────
+# Homepage configuration
 st.set_page_config(
     page_title="DPP-ERP Integration Dashboard",
     page_icon="🔋",
@@ -25,7 +29,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ── CSS ────────────────────────────────────────────────────────────────────────
+# CSS
 st.markdown("""
 <style>
     .main-header {
@@ -51,9 +55,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ── ERP Database (SQLite fallback) ─────────────────────────────────────────────
+# ERP Database (SQLite fallback)
 def init_erp():
-    conn = sqlite3.connect("erp_database.db")
+    conn = sqlite3.connect(BASE_DIR / "erp_database.db")
     c = conn.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS purchase_orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -72,7 +76,7 @@ def init_erp():
 
 def save_purchase_order(battery_id, manufacturer, quantity,
                          unit_price, total, score, reason):
-    conn = sqlite3.connect("erp_database.db")
+    conn = sqlite3.connect(BASE_DIR / "erp_database.db")
     c = conn.cursor()
     c.execute("""INSERT INTO purchase_orders
         (order_date, battery_id, manufacturer, quantity,
@@ -85,7 +89,7 @@ def save_purchase_order(battery_id, manufacturer, quantity,
     conn.close()
 
 def save_eol_decision(battery_id, manufacturer, soh, decision, value, reason):
-    conn = sqlite3.connect("erp_database.db")
+    conn = sqlite3.connect(BASE_DIR / "erp_database.db")
     c = conn.cursor()
     c.execute("""INSERT INTO eol_decisions
         (decision_date, battery_id, manufacturer, soh_pct,
@@ -97,14 +101,14 @@ def save_eol_decision(battery_id, manufacturer, soh, decision, value, reason):
     conn.close()
 
 def get_purchase_orders():
-    conn = sqlite3.connect("erp_database.db")
+    conn = sqlite3.connect(BASE_DIR / "erp_database.db")
     df = pd.read_sql_query(
         "SELECT * FROM purchase_orders ORDER BY id DESC", conn)
     conn.close()
     return df
 
 def get_eol_decisions():
-    conn = sqlite3.connect("erp_database.db")
+    conn = sqlite3.connect(BASE_DIR / "erp_database.db")
     df = pd.read_sql_query(
         "SELECT * FROM eol_decisions ORDER BY id DESC", conn)
     conn.close()
@@ -112,16 +116,16 @@ def get_eol_decisions():
 
 init_erp()
 
-# ── Load Data ─────────────────────────────────────────────────────────────────
+# load Data
 @st.cache_data
 def load_passports():
-    with open("passports.json", "r") as f:
+    with open(BASE_DIR / "passports.json", "r") as f:
         data = json.load(f)
     return {b["id"]: b for b in data["batteries"]}
 
 passports = load_passports()
 
-# ── Procurement Scoring Engine ─────────────────────────────────────────────────
+# Procurement Scoring Engine
 def score_battery(passport, weights):
     """
     Score a battery for procurement based on 5 weighted criteria.
@@ -228,7 +232,7 @@ def score_battery(passport, weights):
     }
 
 
-# ── End of Life Decision Engine ───────────────────────────────────────────────
+# EOL Decision
 def eol_decision(passport):
     """Decide: repair, second life, recycle, or scrap."""
     soh  = passport["state_of_health"]
@@ -291,14 +295,14 @@ def eol_decision(passport):
         }
 
 
-# ── Sidebar ───────────────────────────────────────────────────────────────────
+# Sidebar
 with st.sidebar:
     st.markdown("## 🔋 DPP-ERP Dashboard")
     st.markdown("**ViennaUP Hackathon 2026**")
     st.markdown("*EU Battery Regulation (2023/1542)*")
     st.divider()
 
-    # ── ERP API Status Badge ──────────────────────────────────────────────────
+    # ERP API Connection Status
     badge = erp.status_badge()
     if badge["online"]:
         st.success(badge["message"])
@@ -954,13 +958,12 @@ Always respond in a professional but direct tone. Use bullet points for multi-pa
                         for m in st.session_state.ai_messages
                     ]
 
-                    import os as _os
-                    groq_key = _os.environ.get("GROQ_API_KEY", "")
+
                     response = _requests.post(
                         "https://api.groq.com/openai/v1/chat/completions",
                         headers={
                             "Content-Type": "application/json",
-                            "Authorization": f"Bearer {groq_key}",
+                            "Authorization": f"Bearer {GROQ_API_KEY}",
                         },
                         json={
                             "model": "llama-3.3-70b-versatile",

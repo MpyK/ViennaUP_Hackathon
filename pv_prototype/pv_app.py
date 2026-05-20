@@ -11,9 +11,12 @@ import plotly.express as px
 from datetime import datetime
 import sqlite3
 import requests as _requests
-import os as _os
+import sys, pathlib
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
+BASE_DIR = pathlib.Path(__file__).parent
 
 from erp_connector import ERPConnector
+from config import GROQ_API_KEY
 erp = ERPConnector()
 
 st.set_page_config(page_title="SolarPassport", page_icon="☀️", layout="wide",
@@ -352,7 +355,7 @@ def generate_order_pdf(panel, quantity, unit_price, total, score, erp_ref, order
 
 # ── DB ─────────────────────────────────────────────────────────────────────────
 def init_db():
-    conn = sqlite3.connect("pv_erp_database.db")
+    conn = sqlite3.connect(BASE_DIR / "pv_erp_database.db")
     conn.execute("""CREATE TABLE IF NOT EXISTS purchase_orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT, order_date TEXT, panel_id TEXT,
         manufacturer TEXT, quantity INTEGER, unit_price_eur REAL, total_eur REAL,
@@ -364,30 +367,30 @@ def init_db():
     conn.commit(); conn.close()
 
 def save_po(pid,mfr,qty,unit,total,score,reason):
-    conn=sqlite3.connect("pv_erp_database.db")
+    conn=sqlite3.connect(BASE_DIR / "pv_erp_database.db")
     conn.execute("INSERT INTO purchase_orders (order_date,panel_id,manufacturer,quantity,unit_price_eur,total_eur,recommended_score,reason,status) VALUES (?,?,?,?,?,?,?,?,?)",
         (datetime.now().strftime("%Y-%m-%d %H:%M"),pid,mfr,qty,unit,total,score,reason,"Approved"))
     conn.commit(); conn.close()
 
 def save_eol(pid,mfr,eff,dec,val,reason):
-    conn=sqlite3.connect("pv_erp_database.db")
+    conn=sqlite3.connect(BASE_DIR / "pv_erp_database.db")
     conn.execute("INSERT INTO eol_decisions (decision_date,panel_id,manufacturer,current_efficiency_pct,decision,estimated_value_eur,reason) VALUES (?,?,?,?,?,?,?)",
         (datetime.now().strftime("%Y-%m-%d %H:%M"),pid,mfr,eff,dec,val,reason))
     conn.commit(); conn.close()
 
 def get_pos():
-    conn=sqlite3.connect("pv_erp_database.db")
+    conn=sqlite3.connect(BASE_DIR / "pv_erp_database.db")
     df=pd.read_sql_query("SELECT * FROM purchase_orders ORDER BY id DESC",conn); conn.close(); return df
 
 def get_eols():
-    conn=sqlite3.connect("pv_erp_database.db")
+    conn=sqlite3.connect(BASE_DIR / "pv_erp_database.db")
     df=pd.read_sql_query("SELECT * FROM eol_decisions ORDER BY id DESC",conn); conn.close(); return df
 
 init_db()
 
 @st.cache_data
 def load_passports():
-    with open("pv_passports.json") as f: data=json.load(f)
+    with open(BASE_DIR / "pv_passports.json") as f: data=json.load(f)
     return {p["id"]:p for p in data["panels"]}
 
 passports=load_passports()
@@ -978,10 +981,10 @@ elif page=="AI Assistant":
         with st.chat_message("assistant",avatar="🤖"):
             with st.spinner("Thinking..."):
                 try:
-                    gk=_os.environ.get("GROQ_API_KEY","")
+
                     msgs=[{"role":m["role"],"content":m["content"]} for m in st.session_state.chat_msgs]
                     r=_requests.post("https://api.groq.com/openai/v1/chat/completions",
-                        headers={"Content-Type":"application/json","Authorization":f"Bearer {gk}"},
+                        headers={"Content-Type":"application/json","Authorization":f"Bearer {GROQ_API_KEY}"},
                         json={"model":"llama-3.3-70b-versatile","max_tokens":1000,
                               "messages":[{"role":"system","content":SYSTEM_PROMPT},*msgs]},timeout=30)
                     r.raise_for_status(); reply=r.json()["choices"][0]["message"]["content"]

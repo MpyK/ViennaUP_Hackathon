@@ -4,6 +4,7 @@
       "id": "BAT-001",
       "qr_code": "VC-BAT-2024-EU-00847",
       "status": "Active",
+      "data_note": "Core technical specs (manufacturer, chemistry, weight, capacity, CO2 footprint, raw material origins, electrical characteristics, warranty) are sourced from Volvo Cars Carbon Footprint Report EX90 V1.1 (Sep. 2024) and publicly verified. Supplier ethics/sustainability scores, pricing, EOL monetary values, recyclability %, and state-of-health readings are estimated demo data with no verified source.",
       "general": {
         "manufacturer": "Volvo Cars AB",
         "address": "SE-405 31 Gothenburg, Sweden",
@@ -88,6 +89,7 @@
       "id": "BAT-002",
       "qr_code": "NORTHVOLT-2024-EU-00123",
       "status": "Active",
+      "data_note": "All data is estimated demo data. NOTE: Northvolt AB filed for bankruptcy in November 2024 and is currently in restructuring. Delivery reliability and active status figures do not reflect the current state of the company.",
       "general": {
         "manufacturer": "Northvolt AB",
         "address": "SE-972 54 Lulea, Sweden",
@@ -172,6 +174,7 @@
       "id": "BAT-003",
       "qr_code": "SAMSUNG-SDI-2024-EU-00456",
       "status": "Active",
+      "data_note": "All data is estimated demo data for demonstration purposes. Samsung SDI key specs are loosely based on publicly available product information; ethics scores, pricing, EOL values, and SoH readings are fabricated.",
       "general": {
         "manufacturer": "Samsung SDI",
         "address": "Goed, Hungary",
@@ -256,6 +259,7 @@
       "id": "BAT-004",
       "qr_code": "EUROBAT-2024-EU-00512",
       "status": "Active",
+      "data_note": "All data is estimated demo data for demonstration purposes. Note: README references this manufacturer as EuroBattery Minerals; JSON uses EuroBattery GmbH — inconsistency between documents.",
       "general": {
         "manufacturer": "EuroBattery GmbH",
         "address": "Munich, Germany",
@@ -340,6 +344,7 @@
       "id": "BAT-005",
       "qr_code": "CATL-2024-EU-00789",
       "status": "Active",
+      "data_note": "All data is estimated demo data for demonstration purposes. CATL Qilin LFP specs are loosely based on publicly available product information; ethics scores, pricing, EOL values, and SoH readings are fabricated.",
       "general": {
         "manufacturer": "CATL Europe GmbH",
         "address": "Erfurt, Germany",
@@ -424,6 +429,7 @@
       "id": "BAT-006",
       "qr_code": "NOCOMP-2023-XX-99999",
       "status": "Flagged",
+      "data_note": "Intentionally fictional non-compliant record for demonstration purposes. Represents a worst-case procurement scenario.",
       "general": {
         "manufacturer": "UnknownBatt Ltd.",
         "address": "No address provided",
