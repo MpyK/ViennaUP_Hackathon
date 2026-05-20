@@ -1,33 +1,30 @@
 # ☀️🔋 PassportOS — DPP-ERP Intelligence Platform
 
-> **Winner — Best European Idea Award · ViennaUP Europe Tech Hackathon 2026**
+> **Winner — Best European Idea Award @ViennaUP Europe Tech Hackathon 2026**
 > Built in under 24 hours by Team PassportOS
 
 ---
 
-## What is this?
+PassportOS works on connecting the EU Digital Product Passport with existing ERP solutions.
 
-PassportOS turns the EU Digital Product Passport (DPP) — a regulatory compliance requirement mandatory from 2027 — into a living ERP intelligence layer.
+Two functional prototypes built from scratch:
 
-Two fully functional prototypes built from scratch:
-
-| Platform | Description | Port |
-|---|---|---|
-| 🔋 Battery DPP-ERP | EV battery procurement, EOL decisions, compliance | 8501 |
-| ☀️ SolarPassport | PV solar panel procurement, DPP data, ESG reporting | 8502 |
-| 🔗 Mock ERP REST API | Flask API simulating SAP/weclapp/Odoo integration | 5000 |
+| Platform             | Description                                         | Port |
+| -------------------- | --------------------------------------------------- | ---- |
+| 🔋 Battery DPP-ERP   | EV battery procurement, EOL decisions, compliance   | 8501 |
+| ☀️ SolarPassport     | PV solar panel procurement, DPP data, ESG reporting | 8502 |
+| 🔗 Mock ERP REST API | Flask API simulating SAP/weclapp/Odoo integration   | 5000 |
 
 ---
 
-## The Problem
+## Problem Statement
 
 Every time a procurement manager needs to verify a battery or solar panel:
 
-- Carbon footprint data is scattered across 12+ supplier PDFs
-- Supply chain ethics info is buried in audit reports — if they exist at all
-- Compliance certificates live on separate regulatory websites
-- No single source of truth — manual work takes **3–5 hours per decision**
-- No ERP record, no audit trail
+- Carbon footprint data is scattered across several supplier PDFs
+- Supply chain ethics info is buried in audit reports or do not exist
+- Compliance certificates are on separate regulatory websites
+- Manual work synchronising all the info takes **3–5 hours per decision**
 
 ## Our Solution
 
@@ -35,7 +32,7 @@ Every time a procurement manager needs to verify a battery or solar panel:
 Product Name / QR Code
         ↓
 PassportOS Engine
-  ├── Auto data collection (IEC/ISO registries, manufacturer databases)
+  ├── Automatoc data collection (IEC/ISO registries, manufacturer databases)
   ├── EU compliance verification (CE, IEC 61215/61730, WEEE, RoHS, REACH)
   ├── AI validation algorithm (weighted scoring: Ethics × Carbon × Performance × Compliance × Price)
   └── DPP auto-generation
@@ -50,6 +47,7 @@ Output: EU-verified DPP · Ranked procurement list · Auto ERP order via REST AP
 ## Features
 
 ### 🔋 Battery DPP-ERP Platform (`app_v2.py`)
+
 - **Procurement Advisor** — weighted scoring engine across compliance, ethics, sustainability, quality, price
 - **EOL Decision Engine** — repair / second life / recycle / scrap based on State of Health data
 - **Compliance Report** — EU Battery Regulation 2023/1542 verification
@@ -58,6 +56,7 @@ Output: EU-verified DPP · Ranked procurement list · Auto ERP order via REST AP
 - **ERP Order History** — live data pulled from REST API
 
 ### ☀️ SolarPassport PV Platform (`pv_prototype/pv_app.py`)
+
 - **Dashboard** — panel cards with Best Choice / Acceptable / Least Optimal ranking
 - **Procurement Page** — full DPP data view (carbon, materials, compliance, EOL, supplier ethics)
 - **PDF Order Confirmation** — generated with full DPP data on order
@@ -66,30 +65,31 @@ Output: EU-verified DPP · Ranked procurement list · Auto ERP order via REST AP
 - **AI Assistant** — geopolitical risk analysis, sustainability advice, supply chain questions
 
 ### 🔗 Mock ERP REST API (`mock_erp_api.py`)
+
 Follows the same integration pattern as SAP S/4HANA REST, weclapp AuthenticationToken, and Odoo JSON-RPC.
 
-| Endpoint | Method | Description |
-|---|---|---|
-| `/api/health` | GET | API status check |
-| `/api/purchase-orders` | POST | Create purchase order |
-| `/api/purchase-orders` | GET | List all purchase orders |
-| `/api/eol-decisions` | POST | Record EOL decision |
-| `/api/eol-decisions` | GET | List all EOL decisions |
-| `/api/products` | POST | Register product |
-| `/api/dashboard/summary` | GET | Live ERP summary stats |
+| Endpoint                 | Method | Description              |
+| ------------------------ | ------ | ------------------------ |
+| `/api/health`            | GET    | API status check         |
+| `/api/purchase-orders`   | POST   | Create purchase order    |
+| `/api/purchase-orders`   | GET    | List all purchase orders |
+| `/api/eol-decisions`     | POST   | Record EOL decision      |
+| `/api/eol-decisions`     | GET    | List all EOL decisions   |
+| `/api/products`          | POST   | Register product         |
+| `/api/dashboard/summary` | GET    | Live ERP summary stats   |
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend / App | Python 3.11, Streamlit, Plotly, Pandas |
-| ERP Integration | Flask REST API, Flask-CORS |
-| Local Database | SQLite (fallback when API offline) |
-| AI Layer | Groq API — LLaMA 3.3 70B |
-| PDF Generation | ReportLab |
-| DPP Standards | EU Battery Reg. 2023/1542, IEC 61215, IEC 61730, WEEE 2012/19/EU |
+| Layer           | Technology                                                       |
+| --------------- | ---------------------------------------------------------------- |
+| Frontend / App  | Python 3.11, Streamlit, Plotly, Pandas                           |
+| ERP Integration | Flask REST API, Flask-CORS                                       |
+| Local Database  | SQLite (fallback when API offline)                               |
+| AI Layer        | Groq API — LLaMA 3.3 70B                                         |
+| PDF Generation  | ReportLab                                                        |
+| DPP Standards   | EU Battery Reg. 2023/1542, IEC 61215, IEC 61730, WEEE 2012/19/EU |
 
 ---
 
@@ -116,6 +116,7 @@ ViennaUP_Hackathon/
 ## Installation
 
 ### Prerequisites
+
 - Python 3.9 or higher
 - pip
 
@@ -139,6 +140,7 @@ pip install -r requirements.txt
 ```
 
 ### 3. Get a free Groq API key
+
 Go to **console.groq.com** → sign up free → API Keys → create key
 
 ---
@@ -148,30 +150,37 @@ Go to **console.groq.com** → sign up free → API Keys → create key
 You need **3 terminals** running simultaneously.
 
 ### Terminal 1 — Start the Mock ERP API
+
 ```bash
 python mock_erp_api.py
 ```
+
 Verify it's running: open `http://localhost:5000/api/health`
 
 ### Terminal 2 — Start the Battery App
+
 ```bash
 streamlit run app_v2.py
 ```
+
 Opens at: `http://localhost:8501`
 
 ### Terminal 3 — Start SolarPassport
 
 **Windows (PowerShell):**
+
 ```powershell
 $env:GROQ_API_KEY="your_groq_api_key_here"
 streamlit run pv_prototype/pv_app.py --server.port 8502
 ```
 
 **Mac / Linux:**
+
 ```bash
 export GROQ_API_KEY="your_groq_api_key_here"
 streamlit run pv_prototype/pv_app.py --server.port 8502
 ```
+
 Opens at: `http://localhost:8502`
 
 ---
@@ -212,28 +221,30 @@ ERP_BASE_URL = "https://your-sap-instance.com/sap/opu/odata/sap"
 ## DPP Data
 
 ### Battery Passports (`passports.json`)
+
 6 batteries with full EU Battery Regulation 2023/1542 fields:
 
-| ID | Manufacturer | Compliance |
-|---|---|---|
-| BAT-001 | Volvo Cars AB | ✅ Compliant |
-| BAT-002 | Northvolt AB | ✅ Compliant |
-| BAT-003 | Samsung SDI | ✅ Compliant |
-| BAT-004 | EuroBattery Minerals | ✅ Compliant |
-| BAT-005 | CATL Europe GmbH | ✅ Compliant |
-| BAT-006 | Unknown Origin | ❌ Non-Compliant |
+| ID      | Manufacturer         | Compliance       |
+| ------- | -------------------- | ---------------- |
+| BAT-001 | Volvo Cars AB        | ✅ Compliant     |
+| BAT-002 | Northvolt AB         | ✅ Compliant     |
+| BAT-003 | Samsung SDI          | ✅ Compliant     |
+| BAT-004 | EuroBattery Minerals | ✅ Compliant     |
+| BAT-005 | CATL Europe GmbH     | ✅ Compliant     |
+| BAT-006 | Unknown Origin       | ❌ Non-Compliant |
 
 ### PV Panel Passports (`pv_prototype/pv_passports.json`)
+
 6 solar panels with EU Ecodesign + IEC 61215/61730 fields:
 
-| ID | Manufacturer | Carbon Class | Compliance |
-|---|---|---|---|
-| PV-001 | LONGi Solar | A | ✅ Compliant |
-| PV-002 | Meyer Burger Technology | A+ | ✅ Compliant |
-| PV-003 | Jinko Solar | B | ✅ Compliant |
-| PV-004 | REC Group | A | ✅ Compliant |
-| PV-005 | SunPower (Maxeon Solar) | A+ | ✅ Compliant |
-| PV-006 | SolarMax Generic | Not declared | ❌ Non-Compliant |
+| ID     | Manufacturer            | Carbon Class | Compliance       |
+| ------ | ----------------------- | ------------ | ---------------- |
+| PV-001 | LONGi Solar             | A            | ✅ Compliant     |
+| PV-002 | Meyer Burger Technology | A+           | ✅ Compliant     |
+| PV-003 | Jinko Solar             | B            | ✅ Compliant     |
+| PV-004 | REC Group               | A            | ✅ Compliant     |
+| PV-005 | SunPower (Maxeon Solar) | A+           | ✅ Compliant     |
+| PV-006 | SolarMax Generic        | Not declared | ❌ Non-Compliant |
 
 ---
 
@@ -272,4 +283,4 @@ MIT License — free to use, modify, and distribute.
 
 ---
 
-*"We don't build software to show off, we build software to work with."*
+_"We don't build software to show off, we build software to work with."_
