@@ -98,17 +98,19 @@ Follows the same integration pattern as SAP S/4HANA REST, weclapp Authentication
 ```
 ViennaUP_Hackathon/
 │
-├── app_v2.py                 # 🔋 Battery DPP-ERP Streamlit app
-├── mock_erp_api.py           # 🔗 Flask mock ERP REST API (shared by both apps)
-├── erp_connector.py          # ERP integration layer (swap URL for real ERP)
-├── erp.py                    # SQLite ERP helper
-├── passports.json            # 6 EV battery DPP records
-├── erp_database.db           # SQLite database (auto-created)
+├── start.sh                        # One-command launcher (choose Battery / Solar / Both)
+├── mock_erp_api.py                 # 🔗 Flask mock ERP REST API (shared by both apps)
+├── erp_connector.py                # ERP integration layer (swap URL for real ERP)
+├── config.py                       # Shared config — reads GROQ_API_KEY from environment
+├── requirements.txt
+│
+├── dpp_erp_prototype/
+│   ├── app_v2.py                   # 🔋 Battery DPP-ERP Streamlit app
+│   └── passports.json              # 6 EV battery DPP records
 │
 └── pv_prototype/
-    ├── pv_app.py             # ☀️ SolarPassport Streamlit app
-    ├── pv_passports.json     # 6 PV panel DPP records
-    └── pv_erp_database.db    # SQLite database (auto-created)
+    ├── pv_app.py                   # ☀️ SolarPassport Streamlit app
+    └── pv_passports.json           # 6 PV panel DPP records
 ```
 
 ---
@@ -139,49 +141,51 @@ Or install everything at once:
 pip install -r requirements.txt
 ```
 
-### 3. Get a free Groq API key
+### 3. Set your Groq API key
 
-Go to **console.groq.com** → sign up free → API Keys → create key
-
----
-
-## Running the App
-
-You need **3 terminals** running simultaneously.
-
-### Terminal 1 — Start the Mock ERP API
-
-```bash
-python mock_erp_api.py
-```
-
-Verify it's running: open `http://localhost:5000/api/health`
-
-### Terminal 2 — Start the Battery App
-
-```bash
-streamlit run app_v2.py
-```
-
-Opens at: `http://localhost:8501`
-
-### Terminal 3 — Start SolarPassport
+Get a free key at **console.groq.com** → API Keys → create key, then set it as an environment variable:
 
 **Windows (PowerShell):**
 
 ```powershell
 $env:GROQ_API_KEY="your_groq_api_key_here"
-streamlit run pv_prototype/pv_app.py --server.port 8502
 ```
 
 **Mac / Linux:**
 
 ```bash
 export GROQ_API_KEY="your_groq_api_key_here"
-streamlit run pv_prototype/pv_app.py --server.port 8502
 ```
 
-Opens at: `http://localhost:8502`
+To persist it across sessions, add it to your shell profile or system environment variables.
+
+---
+
+## Running the App
+
+Activate your Python environment, then run:
+
+```bash
+bash start.sh
+```
+
+You'll be prompted to choose:
+
+```
+  PassportOS
+  ----------
+  1) Battery DPP
+  2) Solar Passport
+  3) Both
+```
+
+The ERP API always starts in the background. Ctrl+C stops everything at once.
+
+| App         | URL                   |
+| ----------- | --------------------- |
+| Battery DPP | http://localhost:8501 |
+| Solar DPP   | http://localhost:8502 |
+| ERP API     | http://localhost:5000 |
 
 ---
 
@@ -271,7 +275,7 @@ Next product categories the architecture supports: wind turbines · EV chargers 
 ## Team
 
 **Muthukrishnan Jayakumar** — Tech Lead / Full-Stack Developer
-MSc Mechatronics, Austria
+**Sidharth** — Validation
 
 Built at **ViennaUP Europe Tech Hackathon 2026** — Challenge 1: Product Passport meets ERP
 
@@ -282,5 +286,3 @@ Built at **ViennaUP Europe Tech Hackathon 2026** — Challenge 1: Product Passpo
 MIT License — free to use, modify, and distribute.
 
 ---
-
-_"We don't build software to show off, we build software to work with."_
