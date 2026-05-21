@@ -19,6 +19,8 @@ BASE_DIR = pathlib.Path(__file__).parent
 # ERP Connectio
 from erp_connector import ERPConnector
 from config import GROQ_API_KEY
+from ui import (CSS, main_header, section_title, compliant_div, non_compliant_div,
+                recommend_card, erp_ref_box, eol_banner, decision_path_row, esg_summary, footer)
 erp = ERPConnector()
 
 # Homepage configuration
@@ -30,30 +32,7 @@ st.set_page_config(
 )
 
 # CSS
-st.markdown("""
-<style>
-    .main-header {
-        background: linear-gradient(135deg, #0D1B3E 0%, #1a3a6e 100%);
-        padding: 20px 30px; border-radius: 10px;
-        color: white; margin-bottom: 20px;
-    }
-    .compliant { background:#d4edda; border-left:4px solid #28a745;
-        padding:10px 15px; border-radius:8px; color:#155724; font-weight:bold; margin:5px 0; }
-    .non-compliant { background:#f8d7da; border-left:4px solid #dc3545;
-        padding:10px 15px; border-radius:8px; color:#721c24; font-weight:bold; margin:5px 0; }
-    .warning { background:#fff3cd; border-left:4px solid #ffc107;
-        padding:10px 15px; border-radius:8px; color:#856404; font-weight:bold; margin:5px 0; }
-    .recommend-card { background: linear-gradient(135deg, #0D1B3E, #1a3a6e);
-        padding:20px; border-radius:12px; color:white; margin:10px 0; }
-    .score-badge { display:inline-block; padding:4px 12px; border-radius:20px;
-        font-weight:bold; font-size:0.9em; }
-    .section-title { font-size:1.1em; font-weight:bold; color:#0D1B3E;
-        border-bottom:2px solid #00B4D8; padding-bottom:5px; margin:15px 0 10px 0; }
-    .erp-ref-box { background:#e8f4fd; border-left:4px solid #00B4D8;
-        padding:12px 16px; border-radius:8px; font-family:monospace;
-        font-size:1.05em; margin:10px 0; color:#0D1B3E; }
-</style>
-""", unsafe_allow_html=True)
+st.markdown(CSS, unsafe_allow_html=True)
 
 # ERP Database (SQLite fallback)
 def init_erp():
@@ -330,13 +309,11 @@ with st.sidebar:
 # PAGE: OVERVIEW
 # ══════════════════════════════════════════════════════════════════════════════
 if page == "🏠 Overview":
-    st.markdown("""
-    <div class="main-header">
-        <h2>🔋 DPP-ERP Integration Platform</h2>
-        <p>Competitive Procurement · End of Life Decisions · EU Compliance</p>
-        <p><small>EU Battery Regulation (Reg. EU 2023/1542) | Mandatory from 2027</small></p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(main_header(
+        "🔋 DPP-ERP Integration Platform",
+        "Competitive Procurement · End of Life Decisions · EU Compliance",
+        "EU Battery Regulation (Reg. EU 2023/1542) | Mandatory from 2027"
+    ), unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
     with col1:
@@ -449,15 +426,10 @@ elif page == "🛒 Procurement Advisor":
 
         # Top recommendation
         top = results[0]
-        st.markdown(f"""
-        <div class="recommend-card">
-            <h3>🏆 RECOMMENDED: {top['manufacturer']}</h3>
-            <h4>{top['model']}</h4>
-            <p><b>Composite Score: {top['total']}/100</b> | 
-               Price: €{top['price_per_kwh']}/kWh | 
-               Compliance: {top['compliance']}</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(recommend_card(
+            top["manufacturer"], top["model"],
+            top["total"], top["price_per_kwh"], top["compliance"]
+        ), unsafe_allow_html=True)
 
         st.markdown("### 📊 Full Ranking")
 
@@ -560,10 +532,7 @@ elif page == "🛒 Procurement Advisor":
 
             if erp_result["success"]:
                 st.success(f"✅ Purchase Order sent to ERP API!")
-                st.markdown(
-                    f'<div class="erp-ref-box">📋 ERP Reference: <b>{erp_result["erp_reference"]}</b></div>',
-                    unsafe_allow_html=True
-                )
+                st.markdown(erp_ref_box(erp_result["erp_reference"]), unsafe_allow_html=True)
             else:
                 st.warning(f"⚠️ ERP API unreachable — order saved locally. ({erp_result.get('error', '')})")
 
@@ -599,28 +568,23 @@ elif page == "♻️ End of Life Decisions":
     decision = eol_decision(passport)
 
     # Decision banner
-    st.markdown(f"""
-    <div style="background:{decision['color']}20; border-left:6px solid {decision['color']};
-                 padding:20px; border-radius:10px; margin:15px 0;">
-        <h2 style="color:{decision['color']}; margin:0;">{decision['decision']}</h2>
-        <p style="margin:8px 0 0 0;">{decision['reason']}</p>
-        <p style="margin:4px 0 0 0;"><b>Action:</b> {decision['action']}</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(eol_banner(
+        decision["color"], decision["decision"], decision["reason"], decision["action"]
+    ), unsafe_allow_html=True)
 
     st.divider()
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.markdown('<div class="section-title">📊 Battery Status</div>', unsafe_allow_html=True)
+        st.markdown(section_title("📊 Battery Status"), unsafe_allow_html=True)
         st.metric("State of Health", f"{soh['soce_pct']}%")
         st.metric("Remaining Capacity", f"{soh['remaining_capacity_kwh']} kWh")
         st.metric("Cycles Used", f"{soh['full_equivalent_cycles']}")
         st.metric("Max Cycles", f"{passport['electrical']['expected_cycle_life']}")
 
     with col2:
-        st.markdown('<div class="section-title">💶 Value Assessment</div>', unsafe_allow_html=True)
+        st.markdown(section_title("💶 Value Assessment"), unsafe_allow_html=True)
         st.metric("Second Life Value", f"€{eol.get('second_life_value_eur', 0):,}")
         st.metric("Scrap/Recycle Value", f"€{eol.get('estimated_scrap_value_eur', 0):,}")
         st.metric("Recyclability", f"{eol.get('recyclability_pct', 'N/A')}%")
@@ -664,10 +628,7 @@ elif page == "♻️ End of Life Decisions":
     ]
 
     for path, label, color, active in decision_paths:
-        prefix = "→ " if active else "   "
-        style = f"background:{color}20; border-left:3px solid {color}; padding:6px 12px; border-radius:4px; margin:3px 0;" if active else "padding:6px 12px; color:#aaa; margin:3px 0;"
-        st.markdown(f'<div style="{style}">{prefix}<b>{label}</b>: {path}</div>',
-                    unsafe_allow_html=True)
+        st.markdown(decision_path_row(label, path, color, active), unsafe_allow_html=True)
 
     # ── Save EOL Decision to ERP ──────────────────────────────────────────────
     st.divider()
@@ -694,10 +655,7 @@ elif page == "♻️ End of Life Decisions":
 
         if erp_result["success"]:
             st.success("✅ EOL Decision recorded in ERP system!")
-            st.markdown(
-                f'<div class="erp-ref-box">📋 ERP Reference: <b>{erp_result["erp_reference"]}</b></div>',
-                unsafe_allow_html=True
-            )
+            st.markdown(erp_ref_box(erp_result["erp_reference"]), unsafe_allow_html=True)
         else:
             st.warning(f"⚠️ ERP API unreachable — decision saved locally. ({erp_result.get('error', '')})")
 
@@ -720,15 +678,13 @@ elif page == "🔍 Battery Lookup":
 
         status = comp["compliance_status"]
         if status == "COMPLIANT":
-            st.markdown(f'<div class="compliant">✅ EU COMPLIANT | QR: {passport["qr_code"]}</div>',
-                        unsafe_allow_html=True)
+            st.markdown(compliant_div(f'✅ EU COMPLIANT | QR: {passport["qr_code"]}'), unsafe_allow_html=True)
         else:
-            st.markdown(f'<div class="non-compliant">❌ NON-COMPLIANT | QR: {passport["qr_code"]}</div>',
-                        unsafe_allow_html=True)
+            st.markdown(non_compliant_div(f'❌ NON-COMPLIANT | QR: {passport["qr_code"]}'), unsafe_allow_html=True)
 
         col1, col2 = st.columns(2)
         with col1:
-            st.markdown('<div class="section-title">📦 General</div>', unsafe_allow_html=True)
+            st.markdown(section_title("📦 General"), unsafe_allow_html=True)
             st.write(f"**Manufacturer:** {g['manufacturer']}")
             st.write(f"**Model:** {g['model']}")
             st.write(f"**Chemistry:** {g['chemistry']}")
@@ -737,7 +693,7 @@ elif page == "🔍 Battery Lookup":
             st.write(f"**Cell Production:** {g['place_of_manufacture_cells']}")
 
         with col2:
-            st.markdown('<div class="section-title">🌿 Carbon + Ethics</div>', unsafe_allow_html=True)
+            st.markdown(section_title("🌿 Carbon + Ethics"), unsafe_allow_html=True)
             if cf["total_kg_co2e"]:
                 st.write(f"**Total CO2:** {cf['total_kg_co2e']:,} kg CO2e")
                 st.write(f"**Per kWh:** {cf['per_kwh_kg_co2e']} kg CO2e/kWh")
@@ -771,10 +727,9 @@ elif page == "📊 Compliance Report":
                          use_container_width=True, hide_index=True)
 
             if comp["compliance_status"] == "COMPLIANT":
-                st.markdown('<div class="compliant">✅ FULLY COMPLIANT</div>', unsafe_allow_html=True)
+                st.markdown(compliant_div("✅ FULLY COMPLIANT"), unsafe_allow_html=True)
             else:
-                st.markdown('<div class="non-compliant">❌ NON-COMPLIANT — Cannot be sold in EU</div>',
-                            unsafe_allow_html=True)
+                st.markdown(non_compliant_div("❌ NON-COMPLIANT — Cannot be sold in EU"), unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # PAGE: ERP ORDER HISTORY
@@ -850,13 +805,11 @@ elif page == "📋 ERP Order History":
 # PAGE: AI PROCUREMENT ASSISTANT
 # ══════════════════════════════════════════════════════════════════════════════
 elif page == "🤖 AI Procurement Assistant":
-    st.markdown("""
-    <div class="main-header">
-        <h2>🤖 AI Procurement Assistant</h2>
-        <p>Ask anything about batteries, procurement decisions, EOL strategy, ESG, or geopolitical risk.</p>
-        <p><small>Powered by Claude AI · Grounded in real DPP passport data</small></p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(main_header(
+        "🤖 AI Procurement Assistant",
+        "Ask anything about batteries, procurement decisions, EOL strategy, ESG, or geopolitical risk.",
+        "Powered by Claude AI · Grounded in real DPP passport data"
+    ), unsafe_allow_html=True)
 
     import requests as _requests
 
@@ -996,13 +949,11 @@ Always respond in a professional but direct tone. Use bullet points for multi-pa
 # PAGE: ESG REPORT
 # ══════════════════════════════════════════════════════════════════════════════
 elif page == "🌍 ESG Report":
-    st.markdown("""
-    <div class="main-header">
-        <h2>🌍 ESG Intelligence Report</h2>
-        <p>Environmental · Social · Governance — Auto-generated from Digital Product Passport data</p>
-        <p><small>EU Battery Regulation (2023/1542) | Taxonomy Regulation Aligned</small></p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(main_header(
+        "🌍 ESG Intelligence Report",
+        "Environmental · Social · Governance — Auto-generated from Digital Product Passport data",
+        "EU Battery Regulation (2023/1542) | Taxonomy Regulation Aligned"
+    ), unsafe_allow_html=True)
 
     # ── Compute ESG metrics from passport data ────────────────────────────────
     compliant_batteries   = [p for p in passports.values() if p["compliance"]["compliance_status"] == "COMPLIANT"]
@@ -1182,30 +1133,13 @@ elif page == "🌍 ESG Report":
 
     # ── ESG Summary Box ───────────────────────────────────────────────────────
     st.markdown("### 📋 ESG Executive Summary")
-    st.markdown(f"""
-    <div style="background:#f8f9fa; border-left:6px solid #0D1B3E;
-                padding:24px; border-radius:10px; margin:10px 0;">
-        <h4 style="color:#0D1B3E; margin:0 0 12px 0;">Portfolio ESG Rating: {esg_total}/100</h4>
-        <p><b>🌿 Environmental ({e_score}/100):</b> Portfolio average carbon intensity is {avg_co2:.1f} kg CO2e/kWh.
-        {len(renewable)} of {len(all_batteries)} batteries use renewable energy in production.
-        Average recyclability is {avg_recycl:.1f}%. {len(second_life)} batteries are eligible for second life deployment.</p>
-        <p><b>🤝 Social ({s_score}/100):</b> Average supplier ethics score is {avg_ethics:.1f}/100.
-        {high_risk_count} high-risk raw material sources flagged (conflict mineral exposure).
-        {audited} of {len(all_batteries)} suppliers are third-party audited.</p>
-        <p><b>🏛️ Governance ({g_score}/100):</b> {compliance_pct:.0f}% of batteries are fully EU compliant
-        under Regulation (EU) 2023/1542. {ce_count} carry CE marking. {doc_count} have valid
-        Declaration of Conformity on file.</p>
-        <p style="margin:0;"><b>Recommendation:</b>
-        {'Portfolio meets baseline EU sustainability requirements. Focus on reducing carbon intensity and eliminating high-risk material sources.' if esg_total >= 65
-        else 'Portfolio requires improvement in compliance and supply chain ethics before 2027 mandatory DPP enforcement.'}</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(esg_summary(
+        esg_total, e_score, s_score, g_score,
+        avg_co2, len(renewable), len(all_batteries), avg_recycl,
+        len(second_life), avg_ethics, high_risk_count,
+        audited, compliance_pct, ce_count, doc_count
+    ), unsafe_allow_html=True)
 
 # ── Footer ─────────────────────────────────────────────────────────────────────
 st.markdown("---")
-st.markdown("""
-<div style="text-align:center; color:#6c757d; font-size:0.85em;">
-    🔋 DPP-ERP Integration | ViennaUP Europe Tech Hackathon 2026 |
-    EU Battery Regulation Reg. (EU) 2023/1542
-</div>
-""", unsafe_allow_html=True)
+st.markdown(footer(), unsafe_allow_html=True)

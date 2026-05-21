@@ -64,8 +64,11 @@ class ERPConnector:
         online = self.is_online()
         return {
             "online": online,
-            "message": "✅ Mock ERP API connected (localhost:5000)" if online
-                       else "⚠️ Mock ERP API offline — running in local SQLite mode",
+            "message": (
+                "✅ Mock ERP API connected (localhost:5000)"
+                if online
+                else "⚠️ Mock ERP API offline — running in local SQLite mode"
+            ),
             "color": "green" if online else "orange",
         }
 
@@ -187,7 +190,9 @@ class ERPConnector:
     # ------------------------------------------------------------------ #
     # Products
     # ------------------------------------------------------------------ #
-    def register_product(self, name: str, battery_id: str, category: str = "Battery") -> dict:
+    def register_product(
+        self, name: str, battery_id: str, category: str = "Battery"
+    ) -> dict:
         """POST /api/products"""
         payload = {"name": name, "battery_id": battery_id, "category": category}
         return self._post("/products", payload)

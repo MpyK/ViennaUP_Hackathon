@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
-PYTHON="/c/Users/prsid/.conda/envs/passportos/python.exe"
 DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Use python from the active environment
+if command -v python &>/dev/null; then
+    PYTHON="python"
+elif command -v python3 &>/dev/null; then
+    PYTHON="python3"
+else
+    echo "Python not found. Activate your virtual/conda environment first, then re-run."
+    exit 1
+fi
 
 export PYTHONIOENCODING=utf-8
 
